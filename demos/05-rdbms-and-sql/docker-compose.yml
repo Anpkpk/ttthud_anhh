@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: tt_thud_postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-tt_thud_lab}
+      POSTGRES_USER: ${POSTGRES_USER:-labuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-LabPass123_ChangeMe}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_lab_data:/var/lib/postgresql/data
+      - ./sql:/sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-labuser} -d ${POSTGRES_DB:-tt_thud_lab}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mariadb:
+    image: mariadb:11
+    container_name: tt_thud_mariadb
+    environment:
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-tt_thud_lab}
+      MARIADB_USER: ${MARIADB_USER:-labuser}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-LabPass123_ChangeMe}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-RootPass123_ChangeMe}
+    ports:
+      # Map cổng 3307 trên máy Host để tránh đụng cổng 3306 nếu MariaDB/MySQL native đang chạy
+      - "3307:3306"
+    volumes:
+      - mariadb_lab_data:/var/lib/mysql
+      - ./sql:/sql:ro
+
+  adminer:
+    image: adminer:latest
+    container_name: tt_thud_adminer
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+      - mariadb
+
+volumes:
+  pg_lab_data:
+  mariadb_lab_data:
