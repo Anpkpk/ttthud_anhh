@@ -1,0 +1,53 @@
+# Python & Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+.python-version.local
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Conda & uv local caches
+.conda/
+.uv-cache/
+
+# Virtual Machine disk images & ISOs (large binary files)
+*.qcow2
+*.vdi
+*.vmdk
+*.vhd
+*.vhdx
+*.img
+*.iso
+
+# Local Databases & Runtime Data
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+pgdata/
+mysql_data/
+mariadb_data/
+
+# Environment variables & secrets
+.env
+.env.local
+*.pem
+*.key
+
+# Logs & temporary files
+*.log
+tmp/
+temp/
+
+# OS & Editor artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
