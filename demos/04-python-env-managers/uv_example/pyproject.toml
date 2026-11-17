@@ -1,0 +1,11 @@
+# Cấu hình dự án Python hiện đại theo chuẩn PEP 621 cho uv
+# Dùng: uv sync && uv run python main.py
+[project]
+name = "tt-thud-uv-demo"
+version = "0.1.0"
+description = "Demo cấu hình dự án Python quản lý bằng uv"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.uv]
+package = false

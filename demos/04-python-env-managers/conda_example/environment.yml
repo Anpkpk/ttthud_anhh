@@ -1,0 +1,12 @@
+# Cấu hình môi trường Conda (hỗ trợ cả Python lẫn thư viện C/C++ như numpy, sqlite)
+# Dùng: conda env create -f environment.yml
+name: tt_thud_conda_demo
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - sqlite
+  - numpy>=1.26
+  - pandas>=2.2
