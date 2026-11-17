@@ -1,0 +1,156 @@
+======================================================================
+SUBMISSION LAB 02: RDBMS CHECK & SQL DEMO (SQLite + MariaDB Service)
+Executed on: 2026-11-17 15:45:26 +07 | Host: anhh0309
+======================================================================
+
+>>> [RDBMS Check on Local Machine] <<<
+mariadb from 13.0.2-MariaDB, client 15.2 for debian-linux-gnu (x86_64) using  EditLine wrapper
+active
+Docker version 29.6.0, build fb59821
+
+>>> [DEMO 5] SQLite RDBMS & SQL Scripts (DDL, DML, DQL, VIEW, TCL) <<<
+=== SQLite RDBMS Demo (SQLite version 3.46.1) ===
+1. Executed 01_schema.sql (DDL: 5 tables + 2 indexes)
+2. Executed 02_seed.sql (DML: seed data loaded)
+
+=== [RDBMS Integrity] Kiểm chứng ràng buộc Foreign Key & CHECK ===
+FK blocked invalid insert as expected -> FOREIGN KEY constraint failed
+CHECK blocked invalid GPA (4.50) as expected -> CHECK constraint failed: gpa IS NULL OR (gpa >= 0.00 AND gpa <= 4.00)
+
+=== [DQL] Chạy 10 truy vấn từ 03_queries_dql_join.sql ===
+
+--- [Q1] Lọc & sắp xếp: Sinh viên khóa 2023 có GPA >= 3.20 ---
++--------------+----------------+------+
+| student_code | full_name      | gpa  |
++--------------+----------------+------+
+| 23001574     | Tran Thi Binh  | 3.82 |
+| 23001573     | Nguyen Van An  | 3.65 |
+| 23001801     | Pham Ngoc Diep | 3.55 |
++--------------+----------------+------+
+(3 row(s))
+
+--- [Q2] Xử lý NULL: Tìm sinh viên chưa có GPA và thay bằng giá trị mặc định bằng COALESCE ---
++--------------+--------------+---------+------------------+
+| student_code | full_name    | raw_gpa | gpa_with_default |
++--------------+--------------+---------+------------------+
+| 24002102     | Bui Duc Khai | NULL    | 0.0              |
++--------------+--------------+---------+------------------+
+(1 row(s))
+
+--- [Q3] INNER JOIN nhiều bảng: Bảng điểm chi tiết kèm giảng viên phụ trách ---
++--------------+----------------+-------------+-------------------------+----------------------+----------+-------+
+| student_code | student_name   | course_code | course_name             | lecturer_name        | semester | score |
++--------------+----------------+-------------+-------------------------+----------------------+----------+-------+
+| 23001573     | Nguyen Van An  | INT2204     | Co so du lieu           | TS. Nguyen Minh Tuan | 2025-1   | 9.2   |
+| 23001573     | Nguyen Van An  | INT3306     | Phat trien ung dung Web | ThS. Tran Thu Ha     | 2025-1   | 8.5   |
+| 23001574     | Tran Thi Binh  | DSC3001     | Khai pha du lieu        | TS. Pham Quoc Bao    | 2025-1   | 8.8   |
+| 23001574     | Tran Thi Binh  | INT2204     | Co so du lieu           | TS. Nguyen Minh Tuan | 2025-1   | 9.5   |
+| 23001575     | Le Hoang Cuong | INT2204     | Co so du lieu           | TS. Nguyen Minh Tuan | 2025-1   | 7.1   |
+| 23001801     | Pham Ngoc Diep | INT2204     | Co so du lieu           | TS. Nguyen Minh Tuan | 2025-1   | 8.4   |
+| 23001801     | Pham Ngoc Diep | MAT2400     | Xac suat thong ke       | PGS. Le Hoang Nam    | 2025-1   | 9     |
+| 23001802     | Do Minh Giang  | MAT2400     | Xac suat thong ke       | PGS. Le Hoang Nam    | 2025-1   | 7.6   |
+| 24002101     | Vo Khanh Huyen | DSC3001     | Khai pha du lieu        | TS. Pham Quoc Bao    | 2025-1   | 9.1   |
+| 24002101     | Vo Khanh Huyen | INT2204     | Co so du lieu           | TS. Nguyen Minh Tuan | 2025-2   | NULL  |
++--------------+----------------+-------------+-------------------------+----------------------+----------+-------+
+(10 row(s))
+
+--- [Q4] GROUP BY & HAVING: Thống kê sinh viên có GPA theo từng khoa (chỉ lấy khoa có >= 2 SV có GPA) ---
++-----------+---------------------+-----------------+---------+---------+
+| dept_code | dept_name           | graded_students | avg_gpa | max_gpa |
++-----------+---------------------+-----------------+---------+---------+
+| CNTT      | Cong nghe thong tin | 3               | 3.47    | 3.82    |
+| TOAN      | Toan - Co - Tin hoc | 2               | 3.33    | 3.55    |
++-----------+---------------------+-----------------+---------+---------+
+(2 row(s))
+
+--- [Q5] LEFT JOIN tìm dữ liệu thiếu: Môn học chưa có sinh viên nào đăng ký ---
++-------------+-----------------------------+
+| course_code | course_name                 |
++-------------+-----------------------------+
+| INT4099     | Dien toan dam may (Chua mo) |
++-------------+-----------------------------+
+(1 row(s))
+
+--- [Q6] LEFT JOIN thống kê: Tổng số môn & tổng tín chỉ đã đăng ký của TẤT CẢ sinh viên ---
++--------------+----------------+---------------+---------------+
+| student_code | full_name      | total_courses | total_credits |
++--------------+----------------+---------------+---------------+
+| 23001573     | Nguyen Van An  | 2             | 6             |
+| 23001574     | Tran Thi Binh  | 2             | 6             |
+| 23001801     | Pham Ngoc Diep | 2             | 7             |
+| 24002101     | Vo Khanh Huyen | 2             | 6             |
+| 23001575     | Le Hoang Cuong | 1             | 3             |
+| 23001802     | Do Minh Giang  | 1             | 4             |
+| 24002102     | Bui Duc Khai   | 0             | 0             |
++--------------+----------------+---------------+---------------+
+(7 row(s))
+
+--- [Q7] Biểu thức điều kiện CASE WHEN: Xếp loại học lực theo GPA ---
++--------------+----------------+------+---------------+
+| student_code | full_name      | gpa  | academic_rank |
++--------------+----------------+------+---------------+
+| 23001573     | Nguyen Van An  | 3.65 | Xuat sac      |
+| 23001574     | Tran Thi Binh  | 3.82 | Xuat sac      |
+| 23001575     | Le Hoang Cuong | 2.95 | Kha           |
+| 23001801     | Pham Ngoc Diep | 3.55 | Gioi          |
+| 23001802     | Do Minh Giang  | 3.1  | Kha           |
+| 24002101     | Vo Khanh Huyen | 3.74 | Xuat sac      |
+| 24002102     | Bui Duc Khai   | NULL | Chua xep loai |
++--------------+----------------+------+---------------+
+(7 row(s))
+
+--- [Q8] EXISTS (Subquery tương quan): Sinh viên từng đạt ít nhất một điểm >= 9.0 ---
++--------------+----------------+
+| student_code | full_name      |
++--------------+----------------+
+| 23001573     | Nguyen Van An  |
+| 23001574     | Tran Thi Binh  |
+| 23001801     | Pham Ngoc Diep |
+| 24002101     | Vo Khanh Huyen |
++--------------+----------------+
+(4 row(s))
+
+--- [Q9] CTE (Common Table Expression): Sinh viên có GPA cao hơn trung bình của chính khoa mình ---
++--------------+----------------+-----------+------+--------------+
+| student_code | full_name      | dept_code | gpa  | dept_avg_gpa |
++--------------+----------------+-----------+------+--------------+
+| 23001574     | Tran Thi Binh  | CNTT      | 3.82 | 3.47         |
+| 23001573     | Nguyen Van An  | CNTT      | 3.65 | 3.47         |
+| 23001801     | Pham Ngoc Diep | TOAN      | 3.55 | 3.33         |
++--------------+----------------+-----------+------+--------------+
+(3 row(s))
+
+--- [Q10] Window Function: Xếp hạng GPA trong từng khoa mà vẫn giữ nguyên từng dòng sinh viên ---
++-----------+--------------+----------------+------+--------------+
+| dept_code | student_code | full_name      | gpa  | rank_in_dept |
++-----------+--------------+----------------+------+--------------+
+| CNTT      | 23001574     | Tran Thi Binh  | 3.82 | 1            |
+| CNTT      | 23001573     | Nguyen Van An  | 3.65 | 2            |
+| CNTT      | 23001575     | Le Hoang Cuong | 2.95 | 3            |
+| KHDL      | 24002101     | Vo Khanh Huyen | 3.74 | 1            |
+| TOAN      | 23001801     | Pham Ngoc Diep | 3.55 | 1            |
+| TOAN      | 23001802     | Do Minh Giang  | 3.1  | 2            |
++-----------+--------------+----------------+------+--------------+
+(6 row(s))
+
+=== [VIEW] Thực thi 04_tcl_and_views.sql ===
+Created VIEW v_student_transcript.
+
+--- [V1] SELECT FROM v_student_transcript ---
++--------------+----------------+-------------+-------+
+| student_code | student_name   | course_code | score |
++--------------+----------------+-------------+-------+
+| 23001574     | Tran Thi Binh  | INT2204     | 9.5   |
+| 23001573     | Nguyen Van An  | INT2204     | 9.2   |
+| 24002101     | Vo Khanh Huyen | DSC3001     | 9.1   |
+| 23001801     | Pham Ngoc Diep | MAT2400     | 9     |
+| 23001574     | Tran Thi Binh  | DSC3001     | 8.8   |
+| 23001573     | Nguyen Van An  | INT3306     | 8.5   |
++--------------+----------------+-------------+-------+
+(6 row(s))
+
+=== [TCL] Kiểm chứng Transaction (Atomicity: ROLLBACK & COMMIT) ===
+1. Trước giao dịch       : student_code=24002102, gpa=None
+2. Trong giao dịch (tạm) : student_code=24002102, gpa=3.5
+3. Sau ROLLBACK          : student_code=24002102, gpa=None (Khôi phục nguyên trạng!)
+4. Sau UPDATE + COMMIT   : student_code=24002102, gpa=3.45 (Đã lưu bền vững!)

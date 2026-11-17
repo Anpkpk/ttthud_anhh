@@ -1,0 +1,172 @@
+======================================================================
+SUBMISSION LAB 01: VENV, QEMU/KVM VM, DOCKER CONTAINER & PYTHON MANAGERS
+Executed on: 2026-11-17 15:45:22 +07 | Host: anhh0309
+======================================================================
+
+>>> [DEMO 1] Python Virtual Environment Isolation <<<
+=== [1] Môi trường Python Hệ thống (Trước khi dùng venv) ===
+Python version : 3.14.4
+Executable     : /usr/bin/python3
+sys.prefix     : /usr
+sys.base_prefix: /usr
+In virtual env?: False
+VIRTUAL_ENV    : <not set>
+Site packages  : ['/usr/local/lib/python3.14/dist-packages', '/usr/lib/python3/dist-packages', '/usr/lib/python3.14/dist-packages']
+Hostname       : anhh0309
+OS / Kernel    : Linux 7.0.0-42-generic
+Process PID    : 1313056
+
+=== [2] Tạo & Kích hoạt Virtual Environment (.venv_demo) ===
+Python version : 3.14.4
+Executable     : /run/media/anhh/Local 1/An_Documents/tt_thud/demos/01-venv-vs-isolation/.venv_demo/bin/python
+sys.prefix     : /run/media/anhh/Local 1/An_Documents/tt_thud/demos/01-venv-vs-isolation/.venv_demo
+sys.base_prefix: /usr
+In virtual env?: True
+VIRTUAL_ENV    : /run/media/anhh/Local 1/An_Documents/tt_thud/demos/01-venv-vs-isolation/.venv_demo
+Site packages  : ['/run/media/anhh/Local 1/An_Documents/tt_thud/demos/01-venv-vs-isolation/.venv_demo/lib/python3.14/site-packages', '/run/media/anhh/Local 1/An_Documents/tt_thud/demos/01-venv-vs-isolation/.venv_demo/local/lib/python3.14/dist-packages', '/run/media/anhh/Local 1/An_Documents/tt_thud/demos/01-venv-vs-isolation/.venv_demo/lib/python3/dist-packages', '/run/media/anhh/Local 1/An_Documents/tt_thud/demos/01-venv-vs-isolation/.venv_demo/lib/python3.14/dist-packages']
+Hostname       : anhh0309
+OS / Kernel    : Linux 7.0.0-42-generic
+Process PID    : 1313194
+
+=== [3] Kiểm chứng cô lập site-packages (Cài module mẫu trong venv) ===
+Import trong venv: 1.0.0-only-inside-venv
+Import ngoài hệ thống: ModuleNotFoundError (Hệ thống sạch sẽ, không bị ảnh hưởng!)
+
+>>> [DEMO 2] Virtual Machine (QEMU/KVM + QCOW2 Disk & Snapshot) <<<
+=== [1] Kiểm tra hỗ trợ ảo hóa phần cứng (VT-x / AMD-V & KVM) ===
+CPU Virtualization Flag : svm
+svm
+crw-rw----+ 1 root kvm 10, 232 Nov 17 10:56 /dev/kvm
+
+=== [2] Phiên bản QEMU Hypervisor ===
+QEMU emulator version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.3)
+Copyright (c) 2003-2025 Fabrice Bellard and the QEMU Project developers
+qemu-img version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.3)
+Copyright (c) 2003-2025 Fabrice Bellard and the QEMU Project developers
+
+=== [3] Demo Thin-Provisioned Disk (QCOW2) & Snapshot ===
+Formatting '/run/media/anhh/Local 1/An_Documents/tt_thud/demos/02-virtual-machine-qemu/.vm_demo_tmp/vm-base.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=10737418240 lazy_refcounts=off refcount_bits=16
+Formatting '/run/media/anhh/Local 1/An_Documents/tt_thud/demos/02-virtual-machine-qemu/.vm_demo_tmp/vm-snapshot.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=10737418240 backing_file=/run/media/anhh/Local 1/An_Documents/tt_thud/demos/02-virtual-machine-qemu/.vm_demo_tmp/vm-base.qcow2 backing_fmt=qcow2 lazy_refcounts=off refcount_bits=16
+--- Thông tin ổ đĩa gốc (ảo 10 GiB nhưng kích thước thật trên đĩa cực nhỏ): ---
+image: /run/media/anhh/Local 1/An_Documents/tt_thud/demos/02-virtual-machine-qemu/.vm_demo_tmp/vm-base.qcow2
+file format: qcow2
+virtual size: 10 GiB (10737418240 bytes)
+disk size: 196 KiB
+cluster_size: 65536
+Format specific information:
+    compat: 1.1
+    compression type: zlib
+    lazy refcounts: false
+    refcount bits: 16
+    corrupt: false
+    extended l2: false
+Child node '/file':
+    filename: /run/media/anhh/Local 1/An_Documents/tt_thud/demos/02-virtual-machine-qemu/.vm_demo_tmp/vm-base.qcow2
+    protocol type: file
+    file length: 192 KiB (197120 bytes)
+    disk size: 196 KiB
+--- Thông tin ổ đĩa snapshot (Copy-on-Write dựa trên backing file): ---
+image: /run/media/anhh/Local 1/An_Documents/tt_thud/demos/02-virtual-machine-qemu/.vm_demo_tmp/vm-snapshot.qcow2
+file format: qcow2
+virtual size: 10 GiB (10737418240 bytes)
+disk size: 196 KiB
+cluster_size: 65536
+backing file: /run/media/anhh/Local 1/An_Documents/tt_thud/demos/02-virtual-machine-qemu/.vm_demo_tmp/vm-base.qcow2
+backing file format: qcow2
+Format specific information:
+    compat: 1.1
+    compression type: zlib
+    lazy refcounts: false
+    refcount bits: 16
+    corrupt: false
+    extended l2: false
+Child node '/file':
+    filename: /run/media/anhh/Local 1/An_Documents/tt_thud/demos/02-virtual-machine-qemu/.vm_demo_tmp/vm-snapshot.qcow2
+    protocol type: file
+    file length: 192 KiB (197120 bytes)
+    disk size: 196 KiB
+--- Kích thước chiếm dụng thực tế trên filesystem: ---
+total 392K
+-rw-r--r--+1 anhh anhh 193K Nov 17 15:45 vm-base.qcow2
+-rw-r--r--+1 anhh anhh 193K Nov 17 15:45 vm-snapshot.qcow2
+
+>>> [DEMO 3] Docker Container Isolation (Cached Image Run) <<<
+=== [1] Thông tin trên máy Host (Ubuntu) ===
+Host OS      : Ubuntu 26.04 LTS
+Host Kernel  : 7.0.0-42-generic
+Host Hostname: anhh0309
+
+=== [2] Build Docker Image (Alpine + Python 3) ===
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 246B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/alpine:latest
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 76B done
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/library/alpine:latest@sha256:f59abe656b692d901e184be3445e084786602108599d2a51d229c0f5a48c71bf
+#5 resolve docker.io/library/alpine:latest@sha256:f59abe656b692d901e184be3445e084786602108599d2a51d229c0f5a48c71bf done
+#5 DONE 0.0s
+
+#6 [2/4] RUN apk add --no-cache python3
+#6 CACHED
+
+#7 [3/4] WORKDIR /app
+#7 CACHED
+
+#8 [4/4] COPY app.py .
+#8 CACHED
+
+#9 exporting to image
+#9 exporting layers done
+#9 exporting manifest sha256:cec13ab97f1fe3540b7a72fcc1bda9761095971711c393fa770ef684ade89ca0 done
+#9 exporting config sha256:6bf9e31c84a033ccc23fd4d4c8922e03dbfe4d2a315eac88c8a586c0d884e725 done
+#9 exporting attestation manifest sha256:c41ecb7179442ec59c960303bb8b4d428cd9018e339dbfcc5c316a414ddcde09 done
+#9 exporting manifest list sha256:2e20e4dda3b3b5706fb5756e488f2a9c9ad0bdef2292d82c9f1bd5004b7bff11 done
+#9 naming to docker.io/tt-thud/isolation-demo:latest done
+#9 unpacking to docker.io/tt-thud/isolation-demo:latest done
+#9 DONE 0.0s
+
+=== [3] Chạy Container (Cô lập Userland, PID=1, Hostname riêng, nhưng dùng chung Kernel) ===
+{
+  "app_env": "docker-container",
+  "hostname_uts_namespace": "354b14391a07",
+  "pid_inside_namespace": 1,
+  "userland_os": "Alpine Linux v3.24",
+  "shared_host_kernel": "7.0.0-42-generic",
+  "python_version": "3.14.10",
+  "python_executable": "/usr/bin/python3"
+}
+
+=== [4] Kiểm tra danh sách tiến trình bên trong Container (PID Namespace) ===
+PID   USER     TIME  COMMAND
+    1 root      0:00 ps aux
+
+>>> [DEMO 4] Python Environment Managers Check <<<
+=== Kiểm tra các Python Environment Manager trên máy cá nhân ===
+1. python3 (stdlib venv): Python 3.14.4
+2. pip: pip 25.1.1 from /usr/lib/python3/dist-packages/pip (python 3.14)
+3. virtualenv: chưa cài (cài thử: pip install virtualenv hoặc uv tool install virtualenv)
+4. pyenv: chưa cài (cài thử: curl -fsSL https://pyenv.run | bash)
+5. conda: conda 26.1.1
+--- Danh sách môi trường Conda hiện có trên máy: ---
+
+# conda environments:
+#
+# * -> active
+# + -> frozen
+base                     /home/anhh/miniconda3
+bpbreid_env              /home/anhh/miniconda3/envs/bpbreid_env
+menv                     /home/anhh/miniconda3/envs/menv
+
+6. uv: chưa cài (cài thử: curl -LsSf https://astral.sh/uv/install.sh | sh)
